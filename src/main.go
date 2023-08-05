@@ -92,7 +92,13 @@ func createLastIpFile() {
 
 func ipFileExists() bool {
 	_, err := os.Stat(ipFile)
-	return err == nil
+	truth := err == nil
+	if truth {
+		log.Println("file exists")
+	} else {
+		log.Println("file doesn't exist.")
+	}
+	return truth
 }
 
 func writeIpToFile(ip string) {
