@@ -20,7 +20,7 @@ func main() {
 		createLastIpFile()
 	}
 
-	log.Println("\nCurrent Outgoing IP:")
+	log.Println("Current Outgoing IP:")
 	var currIp string = getCurrentOutgoingIpAsString()
 	log.Println(currIp)
 
