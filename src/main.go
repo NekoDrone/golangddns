@@ -43,7 +43,7 @@ func getCurrentOutgoingIpAsString() string {
 func requestApiToGetIpData(url string) *http.Response {
 	req, err := http.Get(url)
 	if err != nil {
-		log.Fatal("Failed to get request from external API.\n", err)
+		log.Fatal("Failed to get request from external ip-api.\nIs the service down?", err)
 	}
 	return req
 }
@@ -108,6 +108,7 @@ func ipFileExists() bool {
 func writeIpToFile(ip string) {
 	log.Println("Writing IP to File")
 	data := make([]byte, len(ip))
+	data = []byte(ip)
 	os.WriteFile(ipFile, data, 0666)
 }
 
