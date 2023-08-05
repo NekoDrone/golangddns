@@ -74,8 +74,12 @@ type IP struct {
 }
 
 func readLastIpFromFile() string {
+	log.Println("Reading last IP from file.")
 	ipFile := openFile(ipFile)
-	return string(ipFile[:])
+	res := string(ipFile[:])
+	log.Println("Last IP found at:")
+	log.Println(res)
+	return res
 }
 
 func openFile(filename string) []byte {
@@ -102,6 +106,7 @@ func ipFileExists() bool {
 }
 
 func writeIpToFile(ip string) {
+	log.Println("Writing IP to File")
 	data := make([]byte, len(ip))
 	os.WriteFile(ipFile, data, 0666)
 }
