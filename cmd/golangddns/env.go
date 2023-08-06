@@ -6,9 +6,6 @@ import (
 	"strings"
 )
 
-var API_KEY string
-var API_ENDPOINT string
-
 func createEnvFile() {
 	createNewFile(".env")
 }
@@ -21,6 +18,11 @@ func setVars() {
 	log.Print("Please enter the API Endpoint you wish to update here:")
 	apiEndpoint := readInputAsString()
 	setApiEndpoint(apiEndpoint)
+
+	log.Print("Please provide the name of the URL DNS Record you want to update (e.g. @ for root, and www for www) here:")
+	dnsRecordName := readInputAsString()
+	setDnsRecordName(dnsRecordName)
+
 }
 
 func setApiKey(value string) {
@@ -34,6 +36,13 @@ func setApiEndpoint(value string) {
 	envFile := openFile(".env")
 	currKeys := string(envFile[:])
 	currKeys += "API_ENDPOINT=" + value
+	os.WriteFile(".env", []byte(currKeys), 0666)
+}
+
+func setDnsRecordName(value string) {
+	envFile := openFile(".env")
+	currKeys := string(envFile[:])
+	currKeys += "DNS_RECORD_NAME=" + value
 	os.WriteFile(".env", []byte(currKeys), 0666)
 }
 

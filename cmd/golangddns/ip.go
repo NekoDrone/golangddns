@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"log"
@@ -50,12 +51,38 @@ func unmarshalJsonByteArrayToIpString(byteArray []byte) string {
 func updateIpOnExternalDnsRecord(ip string) {
 	apiKey := readEnvVar("API_KEY")
 	apiUrl := readEnvVar("API_ENDPOINT")
+	recordToUpdate := readEnvVar("DNS_RECORD_NAME")
 
-	log.Println("This is where I would have written the API request.")
-	log.Println("The outgoing update would have contained this IP:")
-	log.Println(ip)
-	log.Println("We would have sent the request to the following endpoint:")
-	log.Println(apiUrl)
-	log.Println("API Key:")
-	log.Println(apiKey)
+	body := *newDnsRecord(ip, recordToUpdate, "A")
+	makeHttpRequest(http.MethodPut, apiUrl, body, apiKey)
+}
+
+type DNSRecord struct {
+	Content string
+	Name    string
+	Type    string
+}
+
+func makeHttpRequest(method string, url string, body DNSRecord, authKey string) {
+	data, err := json.Marshal(body)
+	if err != nil {
+		log.Fatal("Could not convert struct to HTTP body. Something went wrong.", err)
+	}
+
+	req, err := http.NewRequest(method, url, bytes.NewReader(data))
+
+	authToken := "Bearer " + authKey
+	req.Header.Add("Authorization", authToken)
+
+	httpClient := &http.Client{}
+	res, err := httpClient.Do(req)
+	if err != nil {
+		log.Print("Could not send request to url. Check the internet connection? ", err)
+	}
+
+	log.Print(res)
+}
+
+func newDnsRecord(ipAddress string, dnsRecordName string, recordType string) *DNSRecord {
+	return &DNSRecord{Content: ipAddress, Name: dnsRecordName, Type: recordType}
 }
